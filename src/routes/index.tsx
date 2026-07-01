@@ -166,7 +166,7 @@ function Home() {
           {cats.map((c) => (
             <a key={c.n} href="#" className="group relative overflow-hidden border border-ink aspect-[4/5] block">
               <img src={c.img} alt={c.n} className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-              <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/50 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
               <div className="absolute inset-0 p-6 flex flex-col justify-end text-paper">
                 <div className="mono text-[10px] uppercase tracking-widest opacity-70">{c.c}</div>
                 <div className="font-display text-2xl mt-2">{c.n}</div>
