@@ -11,6 +11,7 @@ export type PublicFreelancer = {
   hourly_rate: number | null;
   location: string | null;
   years_experience: number | null;
+  phone_country_code: string | null;
   phone: string | null;
   contact_email: string | null;
   profiles: {
@@ -25,7 +26,7 @@ export const getPublicTalent = createServerFn({ method: "GET" }).handler(async (
   const { data, error } = await supabase
     .from("freelancer_profiles")
     .select(
-      "user_id, headline, bio, skills, linkedin_url, availability, hourly_rate, location, years_experience, phone, contact_email, profiles(full_name, avatar_url)",
+      "user_id, headline, bio, skills, linkedin_url, availability, hourly_rate, location, years_experience, phone_country_code, phone, contact_email, profiles(full_name, avatar_url)",
     )
     .order("updated_at", { ascending: false });
 

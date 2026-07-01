@@ -15,6 +15,36 @@ export const Route = createFileRoute("/dashboard/freelancer")({
 const AVAILABILITY = ["Available", "Busy", "Not Available"] as const;
 const IMAGE_EXTENSIONS = ["jpg", "jpeg", "png", "gif", "webp"];
 
+const COUNTRY_CODES = [
+  { code: "+961", label: "Lebanon (+961)" },
+  { code: "+971", label: "UAE (+971)" },
+  { code: "+966", label: "Saudi Arabia (+966)" },
+  { code: "+974", label: "Qatar (+974)" },
+  { code: "+965", label: "Kuwait (+965)" },
+  { code: "+973", label: "Bahrain (+973)" },
+  { code: "+968", label: "Oman (+968)" },
+  { code: "+20", label: "Egypt (+20)" },
+  { code: "+962", label: "Jordan (+962)" },
+  { code: "+90", label: "Turkey (+90)" },
+  { code: "+1", label: "US / Canada (+1)" },
+  { code: "+44", label: "United Kingdom (+44)" },
+  { code: "+33", label: "France (+33)" },
+  { code: "+49", label: "Germany (+49)" },
+  { code: "+34", label: "Spain (+34)" },
+  { code: "+39", label: "Italy (+39)" },
+  { code: "+31", label: "Netherlands (+31)" },
+  { code: "+41", label: "Switzerland (+41)" },
+  { code: "+91", label: "India (+91)" },
+  { code: "+92", label: "Pakistan (+92)" },
+  { code: "+63", label: "Philippines (+63)" },
+  { code: "+65", label: "Singapore (+65)" },
+  { code: "+61", label: "Australia (+61)" },
+  { code: "+27", label: "South Africa (+27)" },
+  { code: "+234", label: "Nigeria (+234)" },
+  { code: "+55", label: "Brazil (+55)" },
+  { code: "+52", label: "Mexico (+52)" },
+] as const;
+
 type FreelancerProfile = {
   headline: string;
   bio: string;
@@ -24,6 +54,7 @@ type FreelancerProfile = {
   hourly_rate: string;
   location: string;
   years_experience: string;
+  phone_country_code: string;
   phone: string;
   contact_email: string;
   is_public: boolean;
@@ -38,6 +69,7 @@ const EMPTY: FreelancerProfile = {
   hourly_rate: "",
   location: "",
   years_experience: "",
+  phone_country_code: "+961",
   phone: "",
   contact_email: "",
   is_public: false,
@@ -101,6 +133,7 @@ function FreelancerDashboard() {
             hourly_rate: data.hourly_rate?.toString() ?? "",
             location: data.location ?? "",
             years_experience: data.years_experience?.toString() ?? "",
+            phone_country_code: data.phone_country_code ?? "+961",
             phone: data.phone ?? "",
             contact_email: data.contact_email ?? "",
             is_public: data.is_public ?? false,
@@ -142,6 +175,7 @@ function FreelancerDashboard() {
       hourly_rate: form.hourly_rate ? Number(form.hourly_rate) : null,
       location: form.location,
       years_experience: form.years_experience ? Number(form.years_experience) : null,
+      phone_country_code: form.phone_country_code,
       phone: form.phone,
       contact_email: form.contact_email,
       is_public: form.is_public,
@@ -359,14 +393,28 @@ function FreelancerDashboard() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <div className="mono text-[10px] uppercase tracking-widest mb-2 text-muted">Mobile number</div>
-                  <input
-                    type="tel"
-                    value={form.phone}
-                    onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                    placeholder="+961 00 000 000"
-                    className="w-full bg-transparent border px-3 py-3 text-sm outline-none"
-                    style={{ borderColor: "var(--border)" }}
-                  />
+                  <div className="flex gap-2">
+                    <select
+                      value={form.phone_country_code}
+                      onChange={(e) => setForm({ ...form, phone_country_code: e.target.value })}
+                      className="bg-transparent border px-2 py-3 text-sm outline-none shrink-0"
+                      style={{ borderColor: "var(--border)" }}
+                    >
+                      {COUNTRY_CODES.map((c) => (
+                        <option key={c.code} value={c.code}>
+                          {c.label}
+                        </option>
+                      ))}
+                    </select>
+                    <input
+                      type="tel"
+                      value={form.phone}
+                      onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                      placeholder="00 000 000"
+                      className="flex-1 min-w-0 bg-transparent border px-3 py-3 text-sm outline-none"
+                      style={{ borderColor: "var(--border)" }}
+                    />
+                  </div>
                 </div>
                 <div>
                   <div className="mono text-[10px] uppercase tracking-widest mb-2 text-muted">Contact email</div>

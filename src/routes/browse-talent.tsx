@@ -140,8 +140,11 @@ function BrowseTalent() {
                   </a>
                 )}
                 {t.phone && (
-                  <a href={`tel:${t.phone}`} className="flex items-center gap-1 mono text-xs hover:text-accent mb-2">
-                    <Phone className="w-3 h-3" /> {t.phone}
+                  <a
+                    href={`tel:${(t.phone_country_code ?? "") + t.phone}`}
+                    className="flex items-center gap-1 mono text-xs hover:text-accent mb-2"
+                  >
+                    <Phone className="w-3 h-3" /> {t.phone_country_code} {t.phone}
                   </a>
                 )}
                 {t.linkedin_url && (
