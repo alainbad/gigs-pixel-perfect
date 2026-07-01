@@ -18,11 +18,18 @@ type Company = {
   description: string;
 };
 
+const CURRENCIES = ["USD", "EUR", "GBP", "AED"] as const;
+const EMPLOYMENT_TYPES = ["Full-time", "Part-time"] as const;
+const WORK_MODES = ["On-site", "Remote", "Hybrid"] as const;
+
 type Job = {
   id: string;
   title: string;
   description: string;
   budget: string;
+  currency: (typeof CURRENCIES)[number];
+  employment_type: (typeof EMPLOYMENT_TYPES)[number];
+  work_mode: (typeof WORK_MODES)[number];
   skills: string[];
   created_at: string;
 };
@@ -37,7 +44,15 @@ function PosterDashboard() {
   const [savingCompany, setSavingCompany] = useState(false);
 
   const [jobs, setJobs] = useState<Job[]>([]);
-  const [jobForm, setJobForm] = useState({ title: "", description: "", budget: "", skills: "" });
+  const [jobForm, setJobForm] = useState({
+    title: "",
+    description: "",
+    budget: "",
+    currency: "USD" as (typeof CURRENCIES)[number],
+    employment_type: "Full-time" as (typeof EMPLOYMENT_TYPES)[number],
+    work_mode: "Remote" as (typeof WORK_MODES)[number],
+    skills: "",
+  });
   const [postingJob, setPostingJob] = useState(false);
 
   useEffect(() => {
@@ -107,6 +122,9 @@ function PosterDashboard() {
         title: jobForm.title,
         description: jobForm.description,
         budget: jobForm.budget,
+        currency: jobForm.currency,
+        employment_type: jobForm.employment_type,
+        work_mode: jobForm.work_mode,
         skills,
       })
       .select()
@@ -114,7 +132,15 @@ function PosterDashboard() {
 
     if (data) {
       setJobs((prev) => [data as Job, ...prev]);
-      setJobForm({ title: "", description: "", budget: "", skills: "" });
+      setJobForm({
+        title: "",
+        description: "",
+        budget: "",
+        currency: "USD",
+        employment_type: "Full-time",
+        work_mode: "Remote",
+        skills: "",
+      });
     }
     setPostingJob(false);
   }
@@ -225,27 +251,88 @@ function PosterDashboard() {
                       style={{ borderColor: "var(--border)" }}
                     />
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <div className="mono text-[10px] uppercase tracking-widest mb-2 text-muted">Budget</div>
+                  <div>
+                    <div className="mono text-[10px] uppercase tracking-widest mb-2 text-muted">Budget</div>
+                    <div className="flex gap-2">
                       <input
                         value={jobForm.budget}
                         onChange={(e) => setJobForm({ ...jobForm, budget: e.target.value })}
-                        placeholder="e.g. $2,000 - $4,000"
-                        className="w-full bg-transparent border px-3 py-3 text-sm outline-none"
+                        placeholder="e.g. 2,000 - 4,000"
+                        className="flex-1 min-w-0 bg-transparent border px-3 py-3 text-sm outline-none"
                         style={{ borderColor: "var(--border)" }}
                       />
+                      <div className="grid grid-cols-4 shrink-0">
+                        {CURRENCIES.map((c) => (
+                          <button
+                            key={c}
+                            type="button"
+                            onClick={() => setJobForm({ ...jobForm, currency: c })}
+                            className="text-xs px-3 py-3 border transition-colors"
+                            style={{
+                              borderColor: "var(--border)",
+                              background: jobForm.currency === c ? "var(--ink)" : "transparent",
+                              color: jobForm.currency === c ? "var(--paper)" : "var(--ink)",
+                            }}
+                          >
+                            {c}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <div className="mono text-[10px] uppercase tracking-widest mb-2 text-muted">Employment type</div>
+                      <div className="grid grid-cols-2 gap-1">
+                        {EMPLOYMENT_TYPES.map((t) => (
+                          <button
+                            key={t}
+                            type="button"
+                            onClick={() => setJobForm({ ...jobForm, employment_type: t })}
+                            className="text-xs py-3 border transition-colors"
+                            style={{
+                              borderColor: "var(--border)",
+                              background: jobForm.employment_type === t ? "var(--ink)" : "transparent",
+                              color: jobForm.employment_type === t ? "var(--paper)" : "var(--ink)",
+                            }}
+                          >
+                            {t}
+                          </button>
+                        ))}
+                      </div>
                     </div>
                     <div>
-                      <div className="mono text-[10px] uppercase tracking-widest mb-2 text-muted">Skills (comma separated)</div>
-                      <input
-                        value={jobForm.skills}
-                        onChange={(e) => setJobForm({ ...jobForm, skills: e.target.value })}
-                        placeholder="React, Node.js"
-                        className="w-full bg-transparent border px-3 py-3 text-sm outline-none"
-                        style={{ borderColor: "var(--border)" }}
-                      />
+                      <div className="mono text-[10px] uppercase tracking-widest mb-2 text-muted">Work mode</div>
+                      <div className="grid grid-cols-3 gap-1">
+                        {WORK_MODES.map((m) => (
+                          <button
+                            key={m}
+                            type="button"
+                            onClick={() => setJobForm({ ...jobForm, work_mode: m })}
+                            className="text-xs py-3 border transition-colors"
+                            style={{
+                              borderColor: "var(--border)",
+                              background: jobForm.work_mode === m ? "var(--ink)" : "transparent",
+                              color: jobForm.work_mode === m ? "var(--paper)" : "var(--ink)",
+                            }}
+                          >
+                            {m}
+                          </button>
+                        ))}
+                      </div>
                     </div>
+                  </div>
+
+                  <div>
+                    <div className="mono text-[10px] uppercase tracking-widest mb-2 text-muted">Skills (comma separated)</div>
+                    <input
+                      value={jobForm.skills}
+                      onChange={(e) => setJobForm({ ...jobForm, skills: e.target.value })}
+                      placeholder="React, Node.js"
+                      className="w-full bg-transparent border px-3 py-3 text-sm outline-none"
+                      style={{ borderColor: "var(--border)" }}
+                    />
                   </div>
                   <button
                     type="submit"
@@ -269,7 +356,19 @@ function PosterDashboard() {
                       >
                         <div className="min-w-0">
                           <div className="text-xl">{job.title}</div>
-                          {job.budget && <div className="mono text-xs text-muted mt-1">{job.budget}</div>}
+                          {job.budget && (
+                            <div className="mono text-xs text-muted mt-1">
+                              {job.currency} {job.budget}
+                            </div>
+                          )}
+                          <div className="mt-2 flex flex-wrap gap-1">
+                            <span className="text-[10px] uppercase tracking-widest px-2 py-0.5 border" style={{ borderColor: "var(--border)" }}>
+                              {job.employment_type}
+                            </span>
+                            <span className="text-[10px] uppercase tracking-widest px-2 py-0.5 border" style={{ borderColor: "var(--border)" }}>
+                              {job.work_mode}
+                            </span>
+                          </div>
                           {job.skills.length > 0 && (
                             <div className="mt-2 flex flex-wrap gap-1">
                               {job.skills.map((s) => (
