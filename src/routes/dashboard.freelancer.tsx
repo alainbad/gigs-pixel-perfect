@@ -99,6 +99,7 @@ function FreelancerDashboard() {
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [saving, setSaving] = useState(false);
   const [savedAt, setSavedAt] = useState<number | null>(null);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
@@ -159,13 +160,15 @@ function FreelancerDashboard() {
     e.preventDefault();
     if (!session) return;
     setSaving(true);
+    setSaveError(null);
+    setSavedAt(null);
 
     const skills = skillsInput
       .split(",")
       .map((s) => s.trim())
       .filter(Boolean);
 
-    await supabase.from("freelancer_profiles").upsert({
+    const { error } = await supabase.from("freelancer_profiles").upsert({
       user_id: session.user.id,
       headline: form.headline,
       bio: form.bio,
@@ -183,7 +186,11 @@ function FreelancerDashboard() {
     });
 
     setSaving(false);
-    setSavedAt(Date.now());
+    if (error) {
+      setSaveError(error.message);
+    } else {
+      setSavedAt(Date.now());
+    }
   }
 
   async function handleCvUpload(e: React.ChangeEvent<HTMLInputElement>) {
@@ -477,6 +484,7 @@ function FreelancerDashboard() {
                 {saving ? "Saving…" : "Save profile"}
               </button>
               {savedAt && <p className="mono text-xs text-muted">Saved.</p>}
+              {saveError && <p className="mono text-xs text-accent">Save failed: {saveError}</p>}
             </form>
 
             <div className="mt-16">
