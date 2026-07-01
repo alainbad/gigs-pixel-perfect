@@ -22,7 +22,7 @@ function availabilityColor(a: string) {
 }
 
 function BrowseTalent() {
-  const talent = Route.useLoaderData();
+  const { talent, error } = Route.useLoaderData();
   const [query, setQuery] = useState("");
   const [skill, setSkill] = useState("");
 
@@ -83,6 +83,12 @@ function BrowseTalent() {
             </select>
           )}
         </div>
+
+        {error && (
+          <p className="mono text-sm text-accent py-4 border px-4 mb-6" style={{ borderColor: "var(--border)" }}>
+            Couldn't load talent: {error}
+          </p>
+        )}
 
         {filtered.length === 0 ? (
           <p className="mono text-sm text-muted py-16 text-center">

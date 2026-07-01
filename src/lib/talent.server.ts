@@ -20,9 +20,14 @@ export type PublicFreelancer = {
   } | null;
 };
 
+export type PublicTalentResult = {
+  talent: PublicFreelancer[];
+  error: string | null;
+};
+
 // Only rows with is_public = true are visible here, enforced by RLS
 // (see supabase/migrations/0006_add_public_talent_listing.sql).
-export const getPublicTalent = createServerFn({ method: "GET" }).handler(async (): Promise<PublicFreelancer[]> => {
+export const getPublicTalent = createServerFn({ method: "GET" }).handler(async (): Promise<PublicTalentResult> => {
   const { data, error } = await supabase
     .from("freelancer_profiles")
     .select(
@@ -31,8 +36,7 @@ export const getPublicTalent = createServerFn({ method: "GET" }).handler(async (
     .order("updated_at", { ascending: false });
 
   if (error) {
-    console.error("Failed to load public talent:", error.message);
-    return [];
+    return { talent: [], error: error.message };
   }
-  return (data as unknown as PublicFreelancer[]) ?? [];
+  return { talent: (data as unknown as PublicFreelancer[]) ?? [], error: null };
 });
