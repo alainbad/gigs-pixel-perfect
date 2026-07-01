@@ -110,12 +110,11 @@ function AccountMenu() {
   );
 }
 
-export function Nav({ active }: { active?: "how" | "browse" | "fairs" | "pricing" }) {
+export function Nav({ active }: { active?: "browse" | "jobs" | "fairs" }) {
   const items: Array<{ key: string; label: string; to: string }> = [
-    { key: "how", label: "How It Works", to: "/#how" },
     { key: "browse", label: "Browse Talent", to: "/browse-talent" },
+    { key: "jobs", label: "Browse Jobs", to: "/browse-jobs" },
     { key: "fairs", label: "Job Fairs", to: "/job-fairs" },
-    { key: "pricing", label: "Pricing", to: "/#pricing" },
   ];
   return (
     <nav className="fixed top-0 inset-x-0 z-50 bg-paper/85 backdrop-blur border-b border-[var(--border)]">
@@ -153,14 +152,44 @@ export function Footer() {
           </p>
         </div>
         {[
-          { h: "Platform", l: ["Browse Talent", "Job Fairs", "Pricing", "How It Works"] },
-          { h: "Company", l: ["About", "Careers", "Press", "Contact"] },
-          { h: "Legal", l: ["Terms", "Privacy", "Cookies", "Guidelines"] },
+          {
+            h: "Platform",
+            l: [
+              { label: "Browse Talent", href: "/browse-talent" },
+              { label: "Browse Jobs", href: "/browse-jobs" },
+              { label: "Job Fairs", href: "/job-fairs" },
+              { label: "Pricing", href: "/#pricing" },
+            ],
+          },
+          {
+            h: "Company",
+            l: [
+              { label: "About", href: "#" },
+              { label: "Careers", href: "#" },
+              { label: "Press", href: "#" },
+              { label: "Contact", href: "#" },
+            ],
+          },
+          {
+            h: "Legal",
+            l: [
+              { label: "Terms", href: "#" },
+              { label: "Privacy", href: "#" },
+              { label: "Cookies", href: "#" },
+              { label: "Guidelines", href: "#" },
+            ],
+          },
         ].map((c) => (
           <div key={c.h}>
             <div className="mono text-xs uppercase tracking-widest text-accent">{c.h}</div>
             <ul className="mt-4 space-y-2 text-sm">
-              {c.l.map((x) => <li key={x}><a href="#" className="hover:text-accent">{x}</a></li>)}
+              {c.l.map((x) => (
+                <li key={x.label}>
+                  <a href={x.href} className="hover:text-accent">
+                    {x.label}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
         ))}

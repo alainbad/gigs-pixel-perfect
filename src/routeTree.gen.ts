@@ -13,6 +13,7 @@ import { Route as SignupRouteImport } from './routes/signup'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as JobFairsRouteImport } from './routes/job-fairs'
 import { Route as BrowseTalentRouteImport } from './routes/browse-talent'
+import { Route as BrowseJobsRouteImport } from './routes/browse-jobs'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardPosterRouteImport } from './routes/dashboard.poster'
 import { Route as DashboardFreelancerRouteImport } from './routes/dashboard.freelancer'
@@ -37,6 +38,11 @@ const BrowseTalentRoute = BrowseTalentRouteImport.update({
   path: '/browse-talent',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BrowseJobsRoute = BrowseJobsRouteImport.update({
+  id: '/browse-jobs',
+  path: '/browse-jobs',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -55,6 +61,7 @@ const DashboardFreelancerRoute = DashboardFreelancerRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/browse-jobs': typeof BrowseJobsRoute
   '/browse-talent': typeof BrowseTalentRoute
   '/job-fairs': typeof JobFairsRoute
   '/login': typeof LoginRoute
@@ -64,6 +71,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/browse-jobs': typeof BrowseJobsRoute
   '/browse-talent': typeof BrowseTalentRoute
   '/job-fairs': typeof JobFairsRoute
   '/login': typeof LoginRoute
@@ -74,6 +82,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/browse-jobs': typeof BrowseJobsRoute
   '/browse-talent': typeof BrowseTalentRoute
   '/job-fairs': typeof JobFairsRoute
   '/login': typeof LoginRoute
@@ -85,6 +94,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/browse-jobs'
     | '/browse-talent'
     | '/job-fairs'
     | '/login'
@@ -94,6 +104,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/browse-jobs'
     | '/browse-talent'
     | '/job-fairs'
     | '/login'
@@ -103,6 +114,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/browse-jobs'
     | '/browse-talent'
     | '/job-fairs'
     | '/login'
@@ -113,6 +125,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BrowseJobsRoute: typeof BrowseJobsRoute
   BrowseTalentRoute: typeof BrowseTalentRoute
   JobFairsRoute: typeof JobFairsRoute
   LoginRoute: typeof LoginRoute
@@ -151,6 +164,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BrowseTalentRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/browse-jobs': {
+      id: '/browse-jobs'
+      path: '/browse-jobs'
+      fullPath: '/browse-jobs'
+      preLoaderRoute: typeof BrowseJobsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -177,6 +197,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BrowseJobsRoute: BrowseJobsRoute,
   BrowseTalentRoute: BrowseTalentRoute,
   JobFairsRoute: JobFairsRoute,
   LoginRoute: LoginRoute,
