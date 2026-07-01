@@ -27,12 +27,14 @@ export type Profile = {
   id: string;
   role: Role;
   full_name: string | null;
+  avatar_url: string | null;
   created_at: string;
 };
 
 export function useProfile(userId: string | undefined) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [refreshIndex, setRefreshIndex] = useState(0);
 
   useEffect(() => {
     if (!userId) {
@@ -56,9 +58,11 @@ export function useProfile(userId: string | undefined) {
     return () => {
       cancelled = true;
     };
-  }, [userId]);
+  }, [userId, refreshIndex]);
 
-  return { profile, loading };
+  const refresh = () => setRefreshIndex((n) => n + 1);
+
+  return { profile, loading, refresh };
 }
 
 // Redirects to /login if unauthenticated, or to the other role's dashboard
@@ -67,7 +71,7 @@ export function useProfile(userId: string | undefined) {
 export function useRequireRole(requiredRole: Role) {
   const navigate = useNavigate();
   const { session, loading: sessionLoading } = useSession();
-  const { profile, loading: profileLoading } = useProfile(session?.user.id);
+  const { profile, loading: profileLoading, refresh } = useProfile(session?.user.id);
 
   const loading = sessionLoading || (!!session && profileLoading);
 
@@ -83,5 +87,5 @@ export function useRequireRole(requiredRole: Role) {
   }, [loading, session, profile, requiredRole, navigate]);
 
   const ready = !loading && !!session && profile?.role === requiredRole;
-  return { session, profile, ready };
+  return { session, profile, ready, refreshProfile: refresh };
 }

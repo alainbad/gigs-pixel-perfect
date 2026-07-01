@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Nav, Footer, Cursor } from "@/components/site";
+import { AvatarUpload } from "@/components/avatar-upload";
 import { supabase } from "@/lib/supabase";
 import { useRequireRole } from "@/lib/auth";
 
@@ -38,6 +39,8 @@ function PosterDashboard() {
   const navigate = useNavigate();
   const { session, profile, ready } = useRequireRole("poster");
 
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+
   const [company, setCompany] = useState<Company | null>(null);
   const [companyForm, setCompanyForm] = useState({ name: "", website: "", description: "" });
   const [loadingCompany, setLoadingCompany] = useState(true);
@@ -54,6 +57,10 @@ function PosterDashboard() {
     skills: "",
   });
   const [postingJob, setPostingJob] = useState(false);
+
+  useEffect(() => {
+    if (profile) setAvatarUrl(profile.avatar_url);
+  }, [profile]);
 
   useEffect(() => {
     if (!ready || !session) return;
@@ -177,9 +184,11 @@ function PosterDashboard() {
             Sign out
           </button>
         </div>
-        <p className="mono text-xs uppercase tracking-widest text-muted mb-10">
+        <p className="mono text-xs uppercase tracking-widest text-muted mb-6">
           Signed in as {profile?.full_name || session?.user.email}
         </p>
+
+        {session && <AvatarUpload session={session} avatarUrl={avatarUrl} onUploaded={setAvatarUrl} />}
 
         {loadingCompany ? (
           <p className="mono text-xs uppercase tracking-widest text-muted">Loading company…</p>

@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Nav, Footer, Cursor } from "@/components/site";
+import { AvatarUpload } from "@/components/avatar-upload";
 import { supabase } from "@/lib/supabase";
 import { useRequireRole } from "@/lib/auth";
 
@@ -61,6 +62,8 @@ function FreelancerDashboard() {
   const [saving, setSaving] = useState(false);
   const [savedAt, setSavedAt] = useState<number | null>(null);
 
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+
   const [cvPath, setCvPath] = useState<string | null>(null);
   const [cvBusy, setCvBusy] = useState(false);
 
@@ -69,6 +72,10 @@ function FreelancerDashboard() {
   const [refDescription, setRefDescription] = useState("");
   const [refFiles, setRefFiles] = useState<FileList | null>(null);
   const [addingRef, setAddingRef] = useState(false);
+
+  useEffect(() => {
+    if (profile) setAvatarUrl(profile.avatar_url);
+  }, [profile]);
 
   useEffect(() => {
     if (!ready || !session) return;
@@ -245,9 +252,11 @@ function FreelancerDashboard() {
             Sign out
           </button>
         </div>
-        <p className="mono text-xs uppercase tracking-widest text-muted mb-10">
+        <p className="mono text-xs uppercase tracking-widest text-muted mb-6">
           Signed in as {profile?.full_name || session?.user.email}
         </p>
+
+        {session && <AvatarUpload session={session} avatarUrl={avatarUrl} onUploaded={setAvatarUrl} />}
 
         {loadingProfile ? (
           <p className="mono text-xs uppercase tracking-widest text-muted">Loading profile…</p>

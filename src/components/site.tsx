@@ -1,5 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { supabase } from "@/lib/supabase";
+import { useSession, useProfile } from "@/lib/auth";
 
 export function Cursor() {
   const [pos, setPos] = useState({ x: -100, y: -100 });
@@ -29,6 +31,85 @@ export function Cursor() {
   );
 }
 
+function AccountMenu() {
+  const { session, loading } = useSession();
+  const { profile } = useProfile(session?.user.id);
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function onClick(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener("mousedown", onClick);
+    return () => document.removeEventListener("mousedown", onClick);
+  }, []);
+
+  async function handleSignOut() {
+    setOpen(false);
+    await supabase.auth.signOut();
+    window.location.href = "/";
+  }
+
+  if (loading) return <div className="w-10 h-10" />;
+
+  if (!session) {
+    return (
+      <div className="flex items-center gap-4">
+        <Link to="/login" className="mono text-xs uppercase tracking-widest hover:text-accent hidden sm:inline">
+          Log In
+        </Link>
+        <Link
+          to="/signup"
+          className="bg-ink text-paper px-5 py-2.5 mono text-xs uppercase tracking-widest hover:bg-accent transition-colors"
+        >
+          Sign Up
+        </Link>
+      </div>
+    );
+  }
+
+  const dashboardTo = profile?.role === "poster" ? "/dashboard/poster" : "/dashboard/freelancer";
+  const initial = (profile?.full_name || session.user.email || "?").charAt(0).toUpperCase();
+
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        onClick={() => setOpen((o) => !o)}
+        className="w-10 h-10 rounded-full overflow-hidden border shrink-0"
+        style={{ borderColor: "var(--border)" }}
+      >
+        {profile?.avatar_url ? (
+          <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-ink text-paper mono text-xs">{initial}</div>
+        )}
+      </button>
+      {open && (
+        <div
+          className="absolute right-0 mt-2 w-44 bg-paper border z-50"
+          style={{ borderColor: "var(--border)", boxShadow: "6px 6px 0 0 var(--ink)" }}
+        >
+          <Link
+            to={dashboardTo}
+            onClick={() => setOpen(false)}
+            className="block px-4 py-3 mono text-xs uppercase tracking-widest hover:text-accent border-b"
+            style={{ borderColor: "var(--border)" }}
+          >
+            Dashboard
+          </Link>
+          <button
+            onClick={handleSignOut}
+            className="block w-full text-left px-4 py-3 mono text-xs uppercase tracking-widest hover:text-accent"
+          >
+            Sign out
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function Nav({ active }: { active?: "how" | "browse" | "fairs" | "pricing" }) {
   const items: Array<{ key: string; label: string; to: string }> = [
     { key: "how", label: "How It Works", to: "/#how" },
@@ -55,17 +136,7 @@ export function Nav({ active }: { active?: "how" | "browse" | "fairs" | "pricing
             ),
           )}
         </ul>
-        <div className="flex items-center gap-4">
-          <Link to="/login" className="mono text-xs uppercase tracking-widest hover:text-accent hidden sm:inline">
-            Log In
-          </Link>
-          <Link
-            to="/signup"
-            className="bg-ink text-paper px-5 py-2.5 mono text-xs uppercase tracking-widest hover:bg-accent transition-colors"
-          >
-            Sign Up
-          </Link>
-        </div>
+        <AccountMenu />
       </div>
     </nav>
   );
