@@ -17,7 +17,7 @@ export type Fair = {
   img: string;
 };
 
-// Used when Airtable isn't configured (no AIRTABLE_API_KEY) so the page still renders.
+// Used when Supabase isn't configured or the fairs table is empty, so the page still renders.
 export const SEED_FAIRS: Fair[] = [
   { id: "CF-081", name: "Gulf Talent Summit", host: "Dubai Chamber", venue: "Madinat Jumeirah", city: "Dubai", region: "Middle East", date: "18 Jul 2026", iso: "2026-07-18T09:00:00Z", format: "In-Person", employers: 148, openings: 1240, attendees: 3400, industries: ["Technology", "Finance", "Consulting"], status: "Registration Open", featured: true, img: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&q=80&w=1200" },
   { id: "CF-082", name: "Frankfurt Finance Forum", host: "Deutsche Börse", venue: "The Squaire", city: "Frankfurt", region: "Europe", date: "04 Aug 2026", iso: "2026-08-04T09:00:00Z", format: "Hybrid", employers: 96, openings: 720, attendees: 2100, industries: ["Finance", "Consulting", "Legal"], status: "Registration Open", img: "https://images.unsplash.com/photo-1467269204594-9661b134dd2b?auto=format&fit=crop&q=80&w=1200" },
