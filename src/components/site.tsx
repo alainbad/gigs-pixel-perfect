@@ -55,9 +55,17 @@ export function Nav({ active }: { active?: "how" | "browse" | "fairs" | "pricing
             ),
           )}
         </ul>
-        <button className="bg-ink text-paper px-5 py-2.5 mono text-xs uppercase tracking-widest hover:bg-accent transition-colors">
-          Join as Freelancer
-        </button>
+        <div className="flex items-center gap-4">
+          <Link to="/login" className="mono text-xs uppercase tracking-widest hover:text-accent hidden sm:inline">
+            Log In
+          </Link>
+          <Link
+            to="/signup"
+            className="bg-ink text-paper px-5 py-2.5 mono text-xs uppercase tracking-widest hover:bg-accent transition-colors"
+          >
+            Sign Up
+          </Link>
+        </div>
       </div>
     </nav>
   );

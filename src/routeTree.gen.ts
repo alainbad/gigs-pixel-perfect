@@ -9,9 +9,23 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SignupRouteImport } from './routes/signup'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as JobFairsRouteImport } from './routes/job-fairs'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DashboardPosterRouteImport } from './routes/dashboard.poster'
+import { Route as DashboardFreelancerRouteImport } from './routes/dashboard.freelancer'
 
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const JobFairsRoute = JobFairsRouteImport.update({
   id: '/job-fairs',
   path: '/job-fairs',
@@ -22,35 +36,94 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardPosterRoute = DashboardPosterRouteImport.update({
+  id: '/dashboard/poster',
+  path: '/dashboard/poster',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardFreelancerRoute = DashboardFreelancerRouteImport.update({
+  id: '/dashboard/freelancer',
+  path: '/dashboard/freelancer',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/job-fairs': typeof JobFairsRoute
+  '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
+  '/dashboard/freelancer': typeof DashboardFreelancerRoute
+  '/dashboard/poster': typeof DashboardPosterRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/job-fairs': typeof JobFairsRoute
+  '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
+  '/dashboard/freelancer': typeof DashboardFreelancerRoute
+  '/dashboard/poster': typeof DashboardPosterRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/job-fairs': typeof JobFairsRoute
+  '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
+  '/dashboard/freelancer': typeof DashboardFreelancerRoute
+  '/dashboard/poster': typeof DashboardPosterRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/job-fairs'
+  fullPaths:
+    | '/'
+    | '/job-fairs'
+    | '/login'
+    | '/signup'
+    | '/dashboard/freelancer'
+    | '/dashboard/poster'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/job-fairs'
-  id: '__root__' | '/' | '/job-fairs'
+  to:
+    | '/'
+    | '/job-fairs'
+    | '/login'
+    | '/signup'
+    | '/dashboard/freelancer'
+    | '/dashboard/poster'
+  id:
+    | '__root__'
+    | '/'
+    | '/job-fairs'
+    | '/login'
+    | '/signup'
+    | '/dashboard/freelancer'
+    | '/dashboard/poster'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   JobFairsRoute: typeof JobFairsRoute
+  LoginRoute: typeof LoginRoute
+  SignupRoute: typeof SignupRoute
+  DashboardFreelancerRoute: typeof DashboardFreelancerRoute
+  DashboardPosterRoute: typeof DashboardPosterRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/job-fairs': {
       id: '/job-fairs'
       path: '/job-fairs'
@@ -65,12 +138,30 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/poster': {
+      id: '/dashboard/poster'
+      path: '/dashboard/poster'
+      fullPath: '/dashboard/poster'
+      preLoaderRoute: typeof DashboardPosterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/freelancer': {
+      id: '/dashboard/freelancer'
+      path: '/dashboard/freelancer'
+      fullPath: '/dashboard/freelancer'
+      preLoaderRoute: typeof DashboardFreelancerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   JobFairsRoute: JobFairsRoute,
+  LoginRoute: LoginRoute,
+  SignupRoute: SignupRoute,
+  DashboardFreelancerRoute: DashboardFreelancerRoute,
+  DashboardPosterRoute: DashboardPosterRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
