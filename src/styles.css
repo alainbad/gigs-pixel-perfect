@@ -11,19 +11,19 @@
   --color-background: var(--paper);
   --color-foreground: var(--ink);
   --color-border: var(--border);
-  --font-display: "Bebas Neue", sans-serif;
-  --font-sans: "DM Sans", sans-serif;
+  --font-display: "Instrument Serif", serif;
+  --font-sans: "Work Sans", sans-serif;
   --font-mono: "Space Mono", monospace;
 }
 
 :root {
-  --ink: #0d0d0d;
-  --paper: #f5f0e8;
-  --cream: #ede7d9;
-  --accent: #ff3d00;
-  --gold: #c8a84b;
-  --muted: #7a7060;
-  --border: #d9d1c0;
+  --ink: #064e3b;
+  --paper: #f5f0e0;
+  --cream: #ece4d0;
+  --accent: #c9a84c;
+  --gold: #c9a84c;
+  --muted: #4a6358;
+  --border: #064e3b26;
 }
 
 @keyframes float {

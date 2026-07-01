@@ -12,6 +12,11 @@ export const Route = createFileRoute("/dashboard/freelancer")({
   component: FreelancerDashboard,
 });
 
+const EMERALD = "#064e3b";
+const EMERALD_MID = "#0d7a5f";
+const GOLD = "#c9a84c";
+const PARCH = "#f5f0e0";
+
 const AVAILABILITY = ["Available", "Busy", "Not Available"] as const;
 const IMAGE_EXTENSIONS = ["jpg", "jpeg", "png", "gif", "webp"];
 
@@ -285,127 +290,143 @@ function FreelancerDashboard() {
 
   if (!ready) {
     return (
-      <div className="min-h-screen bg-paper text-ink flex items-center justify-center">
-        <p className="mono text-xs uppercase tracking-widest text-muted">Loading…</p>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: PARCH, color: EMERALD }}>
+        <p className="text-xs uppercase tracking-widest" style={{ color: `${EMERALD}99` }}>Loading…</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-paper text-ink">
+    <div className="min-h-screen" style={{ background: PARCH, color: EMERALD, fontFamily: '"Work Sans", sans-serif' }}>
       <Cursor />
       <Nav />
-      <section className="pt-32 pb-24 max-w-2xl mx-auto px-6">
-        <div className="flex items-center justify-between mb-2">
-          <h1 className="text-5xl">Your Dashboard.</h1>
-          <button
-            onClick={handleSignOut}
-            className="mono text-xs uppercase tracking-widest text-muted hover:text-accent underline underline-offset-4"
-          >
-            Sign out
-          </button>
+
+      {/* MASTHEAD */}
+      <section className="pt-16">
+        <div className="max-w-3xl mx-auto px-6 py-14 border-b" style={{ borderColor: `${EMERALD}22` }}>
+          <div className="flex flex-wrap items-center justify-between gap-4 text-xs tracking-widest uppercase" style={{ color: `${EMERALD}99` }}>
+            <span>Freelancer Dashboard</span>
+            <button onClick={handleSignOut} className="underline underline-offset-4 hover:text-current" style={{ color: EMERALD_MID }}>
+              Sign out
+            </button>
+          </div>
+          <h1 className="mt-8 text-[clamp(2.5rem,6vw,5rem)] leading-[0.95]" style={{ fontFamily: '"Instrument Serif", serif' }}>
+            Your <span className="italic" style={{ color: EMERALD_MID }}>Dashboard.</span>
+          </h1>
+          <p className="mt-4 text-sm" style={{ color: `${EMERALD}99` }}>
+            Signed in as {profile?.full_name || session?.user.email}
+          </p>
+
+          {session && (
+            <AvatarUpload
+              session={session}
+              avatarUrl={avatarUrl}
+              onUploaded={setAvatarUrl}
+              borderColor={`${EMERALD}33`}
+              initialsBg={EMERALD}
+              initialsColor={PARCH}
+              labelClassName="text-xs uppercase tracking-widest underline underline-offset-4 cursor-pointer"
+            />
+          )}
         </div>
-        <p className="mono text-xs uppercase tracking-widest text-muted mb-6">
-          Signed in as {profile?.full_name || session?.user.email}
-        </p>
+      </section>
 
-        {session && <AvatarUpload session={session} avatarUrl={avatarUrl} onUploaded={setAvatarUrl} />}
-
+      <section className="max-w-3xl mx-auto px-6 py-12">
         {loadingProfile ? (
-          <p className="mono text-xs uppercase tracking-widest text-muted">Loading profile…</p>
+          <p className="text-xs uppercase tracking-widest" style={{ color: `${EMERALD}99` }}>Loading profile…</p>
         ) : (
           <>
             <form onSubmit={handleSave} className="space-y-6">
               <div>
-                <div className="mono text-[10px] uppercase tracking-widest mb-2 text-muted">Headline</div>
+                <div className="text-[10px] uppercase tracking-widest mb-2" style={{ color: `${EMERALD}99` }}>Headline</div>
                 <input
                   value={form.headline}
                   onChange={(e) => setForm({ ...form, headline: e.target.value })}
                   placeholder="e.g. Brand designer for early-stage startups"
                   className="w-full bg-transparent border px-3 py-3 text-sm outline-none"
-                  style={{ borderColor: "var(--border)" }}
+                  style={{ borderColor: `${EMERALD}55` }}
                 />
               </div>
 
               <div>
-                <div className="mono text-[10px] uppercase tracking-widest mb-2 text-muted">Bio</div>
+                <div className="text-[10px] uppercase tracking-widest mb-2" style={{ color: `${EMERALD}99` }}>Bio</div>
                 <textarea
                   rows={4}
                   value={form.bio}
                   onChange={(e) => setForm({ ...form, bio: e.target.value })}
                   className="w-full bg-transparent border px-3 py-3 text-sm outline-none"
-                  style={{ borderColor: "var(--border)" }}
+                  style={{ borderColor: `${EMERALD}55` }}
                 />
               </div>
 
               <div>
-                <div className="mono text-[10px] uppercase tracking-widest mb-2 text-muted">Skills (comma separated)</div>
+                <div className="text-[10px] uppercase tracking-widest mb-2" style={{ color: `${EMERALD}99` }}>Skills (comma separated)</div>
                 <input
                   value={skillsInput}
                   onChange={(e) => setSkillsInput(e.target.value)}
                   placeholder="Figma, Brand Identity, Illustration"
                   className="w-full bg-transparent border px-3 py-3 text-sm outline-none"
-                  style={{ borderColor: "var(--border)" }}
+                  style={{ borderColor: `${EMERALD}55` }}
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <div className="mono text-[10px] uppercase tracking-widest mb-2 text-muted">Hourly rate (USD)</div>
+                  <div className="text-[10px] uppercase tracking-widest mb-2" style={{ color: `${EMERALD}99` }}>Hourly rate (USD)</div>
                   <input
                     type="number"
                     min="0"
                     value={form.hourly_rate}
                     onChange={(e) => setForm({ ...form, hourly_rate: e.target.value })}
                     className="w-full bg-transparent border px-3 py-3 text-sm outline-none"
-                    style={{ borderColor: "var(--border)" }}
+                    style={{ borderColor: `${EMERALD}55` }}
                   />
                 </div>
                 <div>
-                  <div className="mono text-[10px] uppercase tracking-widest mb-2 text-muted">Years of experience</div>
+                  <div className="text-[10px] uppercase tracking-widest mb-2" style={{ color: `${EMERALD}99` }}>Years of experience</div>
                   <input
                     type="number"
                     min="0"
                     value={form.years_experience}
                     onChange={(e) => setForm({ ...form, years_experience: e.target.value })}
                     className="w-full bg-transparent border px-3 py-3 text-sm outline-none"
-                    style={{ borderColor: "var(--border)" }}
+                    style={{ borderColor: `${EMERALD}55` }}
                   />
                 </div>
               </div>
 
               <div>
-                <div className="mono text-[10px] uppercase tracking-widest mb-2 text-muted">Location / timezone</div>
+                <div className="text-[10px] uppercase tracking-widest mb-2" style={{ color: `${EMERALD}99` }}>Location / timezone</div>
                 <input
                   value={form.location}
                   onChange={(e) => setForm({ ...form, location: e.target.value })}
                   placeholder="e.g. Beirut, GMT+2"
                   className="w-full bg-transparent border px-3 py-3 text-sm outline-none"
-                  style={{ borderColor: "var(--border)" }}
+                  style={{ borderColor: `${EMERALD}55` }}
                 />
               </div>
 
               <div>
-                <div className="mono text-[10px] uppercase tracking-widest mb-2 text-muted">LinkedIn URL</div>
+                <div className="text-[10px] uppercase tracking-widest mb-2" style={{ color: `${EMERALD}99` }}>LinkedIn URL</div>
                 <input
                   type="url"
                   value={form.linkedin_url}
                   onChange={(e) => setForm({ ...form, linkedin_url: e.target.value })}
                   placeholder="https://linkedin.com/in/…"
                   className="w-full bg-transparent border px-3 py-3 text-sm outline-none"
-                  style={{ borderColor: "var(--border)" }}
+                  style={{ borderColor: `${EMERALD}55` }}
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <div className="mono text-[10px] uppercase tracking-widest mb-2 text-muted">Mobile number</div>
+                  <div className="text-[10px] uppercase tracking-widest mb-2" style={{ color: `${EMERALD}99` }}>Mobile number</div>
                   <div className="flex gap-2">
                     <select
                       value={form.phone_country_code}
                       onChange={(e) => setForm({ ...form, phone_country_code: e.target.value })}
                       className="bg-transparent border px-2 py-3 text-sm outline-none shrink-0"
-                      style={{ borderColor: "var(--border)" }}
+                      style={{ borderColor: `${EMERALD}55` }}
                     >
                       {COUNTRY_CODES.map((c) => (
                         <option key={c.code} value={c.code}>
@@ -419,25 +440,25 @@ function FreelancerDashboard() {
                       onChange={(e) => setForm({ ...form, phone: e.target.value })}
                       placeholder="00 000 000"
                       className="flex-1 min-w-0 bg-transparent border px-3 py-3 text-sm outline-none"
-                      style={{ borderColor: "var(--border)" }}
+                      style={{ borderColor: `${EMERALD}55` }}
                     />
                   </div>
                 </div>
                 <div>
-                  <div className="mono text-[10px] uppercase tracking-widest mb-2 text-muted">Contact email</div>
+                  <div className="text-[10px] uppercase tracking-widest mb-2" style={{ color: `${EMERALD}99` }}>Contact email</div>
                   <input
                     type="email"
                     value={form.contact_email}
                     onChange={(e) => setForm({ ...form, contact_email: e.target.value })}
                     placeholder="you@example.com"
                     className="w-full bg-transparent border px-3 py-3 text-sm outline-none"
-                    style={{ borderColor: "var(--border)" }}
+                    style={{ borderColor: `${EMERALD}55` }}
                   />
                 </div>
               </div>
 
               <div>
-                <div className="mono text-[10px] uppercase tracking-widest mb-2 text-muted">Availability</div>
+                <div className="text-[10px] uppercase tracking-widest mb-2" style={{ color: `${EMERALD}99` }}>Availability</div>
                 <div className="grid grid-cols-3 gap-1">
                   {AVAILABILITY.map((a) => (
                     <button
@@ -446,9 +467,9 @@ function FreelancerDashboard() {
                       onClick={() => setForm({ ...form, availability: a })}
                       className="text-xs py-2 border transition-colors"
                       style={{
-                        borderColor: "var(--border)",
-                        background: form.availability === a ? "var(--ink)" : "transparent",
-                        color: form.availability === a ? "var(--paper)" : "var(--ink)",
+                        borderColor: `${EMERALD}55`,
+                        background: form.availability === a ? EMERALD : "transparent",
+                        color: form.availability === a ? PARCH : EMERALD,
                       }}
                     >
                       {a}
@@ -459,11 +480,11 @@ function FreelancerDashboard() {
 
               <label
                 className="flex items-center justify-between gap-4 border px-4 py-3 cursor-pointer"
-                style={{ borderColor: "var(--border)" }}
+                style={{ borderColor: `${EMERALD}55` }}
               >
                 <span>
                   <span className="block">List me on Browse Talent</span>
-                  <span className="mono text-xs text-muted">
+                  <span className="text-xs" style={{ color: `${EMERALD}99` }}>
                     Makes this profile (not your CV) visible to anyone browsing the site.
                   </span>
                 </span>
@@ -472,44 +493,44 @@ function FreelancerDashboard() {
                   checked={form.is_public}
                   onChange={(e) => setForm({ ...form, is_public: e.target.checked })}
                   className="w-5 h-5 shrink-0"
-                  style={{ accentColor: "var(--ink)" }}
+                  style={{ accentColor: EMERALD }}
                 />
               </label>
 
               <button
                 type="submit"
                 disabled={saving}
-                className="w-full bg-ink text-paper py-3 mono text-xs uppercase tracking-widest hover:bg-accent transition-colors disabled:opacity-50"
+                className="w-full py-3 text-xs uppercase tracking-widest transition-colors disabled:opacity-50"
+                style={{ background: GOLD, color: EMERALD }}
               >
                 {saving ? "Saving…" : "Save profile"}
               </button>
-              {savedAt && <p className="mono text-xs text-muted">Saved.</p>}
-              {saveError && <p className="mono text-xs text-accent">Save failed: {saveError}</p>}
+              {savedAt && <p className="text-xs" style={{ color: `${EMERALD}99` }}>Saved.</p>}
+              {saveError && <p className="text-xs" style={{ color: "#b3261e" }}>Save failed: {saveError}</p>}
             </form>
 
             <div className="mt-16">
-              <h2 className="text-2xl mb-4">CV / Resume</h2>
+              <h2 className="text-3xl mb-4" style={{ fontFamily: '"Instrument Serif", serif' }}>CV / Resume</h2>
               {cvPath ? (
-                <div
-                  className="flex items-center justify-between gap-4 border px-4 py-3"
-                  style={{ borderColor: "var(--border)" }}
-                >
+                <div className="flex items-center justify-between gap-4 border px-4 py-3" style={{ borderColor: `${EMERALD}55` }}>
                   <span className="text-sm truncate">{fileNameFromPath(cvPath)}</span>
                   <div className="flex gap-4 shrink-0">
                     <button
                       onClick={handleCvDownload}
-                      className="mono text-xs uppercase tracking-widest hover:text-accent underline underline-offset-4"
+                      className="text-xs uppercase tracking-widest underline underline-offset-4"
+                      style={{ color: EMERALD_MID }}
                     >
                       View
                     </button>
-                    <label className="mono text-xs uppercase tracking-widest hover:text-accent underline underline-offset-4 cursor-pointer">
+                    <label className="text-xs uppercase tracking-widest underline underline-offset-4 cursor-pointer" style={{ color: EMERALD_MID }}>
                       Replace
                       <input type="file" accept=".pdf,.doc,.docx" className="hidden" onChange={handleCvUpload} disabled={cvBusy} />
                     </label>
                     <button
                       onClick={handleCvRemove}
                       disabled={cvBusy}
-                      className="mono text-xs uppercase tracking-widest text-muted hover:text-accent"
+                      className="text-xs uppercase tracking-widest"
+                      style={{ color: `${EMERALD}99` }}
                     >
                       Remove
                     </button>
@@ -517,10 +538,10 @@ function FreelancerDashboard() {
                 </div>
               ) : (
                 <label
-                  className="flex items-center justify-center border border-dashed px-4 py-8 cursor-pointer hover:border-accent transition-colors"
-                  style={{ borderColor: "var(--border)" }}
+                  className="flex items-center justify-center border border-dashed px-4 py-8 cursor-pointer transition-colors"
+                  style={{ borderColor: `${EMERALD}55` }}
                 >
-                  <span className="mono text-xs uppercase tracking-widest text-muted">
+                  <span className="text-xs uppercase tracking-widest" style={{ color: `${EMERALD}99` }}>
                     {cvBusy ? "Uploading…" : "Upload your CV (PDF or Word)"}
                   </span>
                   <input type="file" accept=".pdf,.doc,.docx" className="hidden" onChange={handleCvUpload} disabled={cvBusy} />
@@ -529,66 +550,68 @@ function FreelancerDashboard() {
             </div>
 
             <div className="mt-16">
-              <h2 className="text-2xl mb-4">Project references</h2>
-              <p className="mono text-xs text-muted mb-6">
+              <h2 className="text-3xl mb-4" style={{ fontFamily: '"Instrument Serif", serif' }}>Project references</h2>
+              <p className="text-xs mb-6" style={{ color: `${EMERALD}99` }}>
                 Showcase past work with photos or files clients can view on your profile.
               </p>
 
               <form onSubmit={handleAddReference} className="space-y-4 mb-10">
                 <div>
-                  <div className="mono text-[10px] uppercase tracking-widest mb-2 text-muted">Project title</div>
+                  <div className="text-[10px] uppercase tracking-widest mb-2" style={{ color: `${EMERALD}99` }}>Project title</div>
                   <input
                     required
                     value={refTitle}
                     onChange={(e) => setRefTitle(e.target.value)}
                     placeholder="e.g. Brand identity for Foldwork"
                     className="w-full bg-transparent border px-3 py-3 text-sm outline-none"
-                    style={{ borderColor: "var(--border)" }}
+                    style={{ borderColor: `${EMERALD}55` }}
                   />
                 </div>
                 <div>
-                  <div className="mono text-[10px] uppercase tracking-widest mb-2 text-muted">Description</div>
+                  <div className="text-[10px] uppercase tracking-widest mb-2" style={{ color: `${EMERALD}99` }}>Description</div>
                   <textarea
                     rows={3}
                     value={refDescription}
                     onChange={(e) => setRefDescription(e.target.value)}
                     className="w-full bg-transparent border px-3 py-3 text-sm outline-none"
-                    style={{ borderColor: "var(--border)" }}
+                    style={{ borderColor: `${EMERALD}55` }}
                   />
                 </div>
                 <div>
-                  <div className="mono text-[10px] uppercase tracking-widest mb-2 text-muted">Photos or files</div>
+                  <div className="text-[10px] uppercase tracking-widest mb-2" style={{ color: `${EMERALD}99` }}>Photos or files</div>
                   <input
                     type="file"
                     multiple
                     onChange={(e) => setRefFiles(e.target.files)}
-                    className="w-full bg-transparent border px-3 py-3 text-sm outline-none file:mr-3 file:border-0 file:bg-ink file:text-paper file:px-3 file:py-1.5 file:mono file:text-xs file:uppercase file:tracking-widest"
-                    style={{ borderColor: "var(--border)" }}
+                    className="w-full bg-transparent border px-3 py-3 text-sm outline-none file:mr-3 file:border-0 file:px-3 file:py-1.5 file:text-xs file:uppercase file:tracking-widest"
+                    style={{ borderColor: `${EMERALD}55` }}
                   />
                 </div>
                 <button
                   type="submit"
                   disabled={addingRef}
-                  className="w-full bg-ink text-paper py-3 mono text-xs uppercase tracking-widest hover:bg-accent transition-colors disabled:opacity-50"
+                  className="w-full py-3 text-xs uppercase tracking-widest transition-colors disabled:opacity-50"
+                  style={{ background: GOLD, color: EMERALD }}
                 >
                   {addingRef ? "Adding…" : "Add project"}
                 </button>
               </form>
 
               {references.length === 0 ? (
-                <p className="mono text-xs uppercase tracking-widest text-muted">No project references yet.</p>
+                <p className="text-xs uppercase tracking-widest" style={{ color: `${EMERALD}99` }}>No project references yet.</p>
               ) : (
                 <div className="space-y-6">
                   {references.map((ref) => (
-                    <div key={ref.id} className="border p-5" style={{ borderColor: "var(--border)" }}>
+                    <div key={ref.id} className="border p-5" style={{ borderColor: `${EMERALD}33` }}>
                       <div className="flex items-start justify-between gap-4">
                         <div className="min-w-0">
-                          <div className="text-xl">{ref.title}</div>
-                          {ref.description && <p className="text-sm text-muted mt-1">{ref.description}</p>}
+                          <div className="text-xl" style={{ fontFamily: '"Instrument Serif", serif' }}>{ref.title}</div>
+                          {ref.description && <p className="text-sm mt-1" style={{ color: `${EMERALD}CC` }}>{ref.description}</p>}
                         </div>
                         <button
                           onClick={() => handleDeleteReference(ref)}
-                          className="mono text-xs uppercase tracking-widest text-muted hover:text-accent shrink-0"
+                          className="text-xs uppercase tracking-widest shrink-0"
+                          style={{ color: `${EMERALD}99` }}
                         >
                           Delete
                         </button>
@@ -602,7 +625,7 @@ function FreelancerDashboard() {
                                   src={projectFileUrl(path)}
                                   alt={fileNameFromPath(path)}
                                   className="w-24 h-24 object-cover border"
-                                  style={{ borderColor: "var(--border)" }}
+                                  style={{ borderColor: `${EMERALD}33` }}
                                 />
                               </a>
                             ) : (
@@ -611,8 +634,8 @@ function FreelancerDashboard() {
                                 href={projectFileUrl(path)}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="mono text-xs uppercase tracking-widest px-3 py-2 border hover:text-accent"
-                                style={{ borderColor: "var(--border)" }}
+                                className="text-xs uppercase tracking-widest px-3 py-2 border"
+                                style={{ borderColor: `${EMERALD}33`, color: EMERALD_MID }}
                               >
                                 {fileNameFromPath(path)}
                               </a>

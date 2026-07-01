@@ -6,10 +6,18 @@ export function AvatarUpload({
   session,
   avatarUrl,
   onUploaded,
+  borderColor = "var(--border)",
+  initialsBg = "var(--ink)",
+  initialsColor = "var(--paper)",
+  labelClassName = "mono text-xs uppercase tracking-widest hover:text-accent underline underline-offset-4 cursor-pointer",
 }: {
   session: Session;
   avatarUrl: string | null;
   onUploaded: (url: string) => void;
+  borderColor?: string;
+  initialsBg?: string;
+  initialsColor?: string;
+  labelClassName?: string;
 }) {
   const [busy, setBusy] = useState(false);
 
@@ -34,16 +42,19 @@ export function AvatarUpload({
 
   return (
     <div className="flex items-center gap-5 mb-10">
-      <div className="w-20 h-20 rounded-full overflow-hidden border shrink-0" style={{ borderColor: "var(--border)" }}>
+      <div className="w-20 h-20 rounded-full overflow-hidden border shrink-0" style={{ borderColor }}>
         {avatarUrl ? (
           <img src={avatarUrl} alt="" className="w-full h-full object-cover" />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-ink text-paper mono text-xl">
+          <div
+            className="w-full h-full flex items-center justify-center mono text-xl"
+            style={{ background: initialsBg, color: initialsColor }}
+          >
             {(session.user.email || "?").charAt(0).toUpperCase()}
           </div>
         )}
       </div>
-      <label className="mono text-xs uppercase tracking-widest hover:text-accent underline underline-offset-4 cursor-pointer">
+      <label className={labelClassName}>
         {busy ? "Uploading…" : avatarUrl ? "Change photo" : "Upload photo"}
         <input type="file" accept="image/*" className="hidden" onChange={handleUpload} disabled={busy} />
       </label>

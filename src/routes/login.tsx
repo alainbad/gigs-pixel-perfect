@@ -10,6 +10,11 @@ export const Route = createFileRoute("/login")({
   component: LoginPage,
 });
 
+const EMERALD = "#064e3b";
+const EMERALD_MID = "#0d7a5f";
+const GOLD = "#c9a84c";
+const PARCH = "#f5f0e0";
+
 function LoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -40,53 +45,56 @@ function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-paper text-ink">
+    <div className="min-h-screen" style={{ background: PARCH, color: EMERALD, fontFamily: '"Work Sans", sans-serif' }}>
       <Cursor />
       <Nav />
-      <section className="pt-32 pb-24 max-w-md mx-auto px-6">
-        <h1 className="text-5xl mb-2">Log In.</h1>
-        <p className="mono text-xs uppercase tracking-widest text-muted mb-10">
-          Welcome back to FreeLand
-        </p>
+      <section className="pt-40 pb-24 max-w-md mx-auto px-6">
+        <div className="text-xs tracking-widest uppercase mb-4" style={{ color: `${EMERALD}99` }}>
+          Welcome back
+        </div>
+        <h1 className="text-6xl leading-[0.95] mb-6" style={{ fontFamily: '"Instrument Serif", serif' }}>
+          Log <span className="italic" style={{ color: EMERALD_MID }}>In.</span>
+        </h1>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6 mt-10">
           <div>
-            <div className="mono text-[10px] uppercase tracking-widest mb-2 text-muted">Email</div>
+            <div className="text-[10px] uppercase tracking-widest mb-2" style={{ color: `${EMERALD}99` }}>Email</div>
             <input
               required
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full bg-transparent border px-3 py-3 text-sm outline-none"
-              style={{ borderColor: "var(--border)" }}
+              style={{ borderColor: `${EMERALD}55` }}
             />
           </div>
 
           <div>
-            <div className="mono text-[10px] uppercase tracking-widest mb-2 text-muted">Password</div>
+            <div className="text-[10px] uppercase tracking-widest mb-2" style={{ color: `${EMERALD}99` }}>Password</div>
             <input
               required
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full bg-transparent border px-3 py-3 text-sm outline-none"
-              style={{ borderColor: "var(--border)" }}
+              style={{ borderColor: `${EMERALD}55` }}
             />
           </div>
 
-          {error && <p className="text-accent text-sm">{error}</p>}
+          {error && <p className="text-sm" style={{ color: "#b3261e" }}>{error}</p>}
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-ink text-paper py-3 mono text-xs uppercase tracking-widest hover:bg-accent transition-colors disabled:opacity-50"
+            className="w-full py-3 text-xs uppercase tracking-widest transition-colors disabled:opacity-50"
+            style={{ background: GOLD, color: EMERALD }}
           >
             {loading ? "Logging in…" : "Log in"}
           </button>
 
-          <p className="mono text-xs text-muted">
+          <p className="text-xs" style={{ color: `${EMERALD}99` }}>
             Don't have an account?{" "}
-            <Link to="/signup" className="text-accent underline underline-offset-4">
+            <Link to="/signup" className="underline underline-offset-4" style={{ color: EMERALD_MID }}>
               Sign up
             </Link>
           </p>
