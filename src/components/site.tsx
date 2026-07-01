@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 
 export function Cursor() {
   const [pos, setPos] = useState({ x: -100, y: -100 });
@@ -15,7 +15,7 @@ export function Cursor() {
   }, []);
   return (
     <div
-      className="pointer-events-none fixed z-[9999] rounded-full transition-[width,height,background] duration-150"
+      className="pointer-events-none fixed z-[9999] rounded-full transition-[width,height,background] duration-150 hidden md:block"
       style={{
         left: pos.x,
         top: pos.y,
@@ -96,6 +96,82 @@ export function Footer() {
   );
 }
 
-export function Reveal({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return <div className={`reveal ${className}`}>{children}</div>;
+export function Reveal({ children, className = "" }: { children: ReactNode; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [seen, setSeen] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            setSeen(true);
+            io.disconnect();
+          }
+        });
+      },
+      { threshold: 0.1 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  return (
+    <div
+      ref={ref}
+      className={`${className} transition-all duration-700 ease-out ${seen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+    >
+      {children}
+    </div>
+  );
+}
+
+export function Modal({ open, onClose, title, children }: { open: boolean; onClose: () => void; title: string; children: ReactNode }) {
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [open, onClose]);
+  if (!open) return null;
+  return (
+    <div
+      onClick={onClose}
+      className="fixed inset-0 z-[100] bg-ink/60 backdrop-blur-sm flex items-center justify-center p-4"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="bg-paper border border-ink w-full max-w-lg p-8 lg:p-10 relative shadow-[12px_12px_0_0_var(--ink)]"
+      >
+        <div className="flex items-center justify-between mb-6">
+          <div className="mono text-[10px] uppercase tracking-widest text-accent">GIGS</div>
+          <button onClick={onClose} className="mono text-xs uppercase tracking-widest hover:text-accent">Close ✕</button>
+        </div>
+        <h3 className="font-display text-4xl md:text-5xl leading-none">{title}</h3>
+        <div className="mt-6">{children}</div>
+      </div>
+    </div>
+  );
+}
+
+export function Field({ label, ...props }: { label: string } & React.InputHTMLAttributes<HTMLInputElement>) {
+  return (
+    <label className="block">
+      <span className="mono text-[10px] uppercase tracking-widest text-muted">{label}</span>
+      <input {...props} className="mt-2 w-full bg-cream border border-ink px-3 py-3 mono text-sm outline-none focus:border-accent" />
+    </label>
+  );
+}
+
+export function TextArea({ label, ...props }: { label: string } & React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
+  return (
+    <label className="block">
+      <span className="mono text-[10px] uppercase tracking-widest text-muted">{label}</span>
+      <textarea {...props} rows={4} className="mt-2 w-full bg-cream border border-ink px-3 py-3 mono text-sm outline-none focus:border-accent" />
+    </label>
+  );
 }
