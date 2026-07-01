@@ -87,6 +87,17 @@ type ProjectReference = {
   file_paths: string[];
 };
 
+type HireRequest = {
+  id: string;
+  poster_name: string | null;
+  poster_email: string | null;
+  project_type: string;
+  budget: string | null;
+  message: string | null;
+  status: "pending" | "accepted" | "declined";
+  created_at: string;
+};
+
 function fileNameFromPath(path: string) {
   return path.split("/").pop() ?? path;
 }
@@ -116,6 +127,8 @@ function FreelancerDashboard() {
   const [refDescription, setRefDescription] = useState("");
   const [refFiles, setRefFiles] = useState<FileList | null>(null);
   const [addingRef, setAddingRef] = useState(false);
+
+  const [hireRequests, setHireRequests] = useState<HireRequest[]>([]);
 
   useEffect(() => {
     if (profile) setAvatarUrl(profile.avatar_url);
@@ -160,6 +173,21 @@ function FreelancerDashboard() {
       .order("created_at", { ascending: false })
       .then(({ data }) => setReferences((data as ProjectReference[]) ?? []));
   }, [ready, session]);
+
+  useEffect(() => {
+    if (!ready || !session) return;
+    supabase
+      .from("hire_requests")
+      .select("*")
+      .eq("freelancer_id", session.user.id)
+      .order("created_at", { ascending: false })
+      .then(({ data }) => setHireRequests((data as HireRequest[]) ?? []));
+  }, [ready, session]);
+
+  async function handleRespondToHireRequest(id: string, status: "accepted" | "declined") {
+    await supabase.from("hire_requests").update({ status }).eq("id", id);
+    setHireRequests((prev) => prev.map((r) => (r.id === id ? { ...r, status } : r)));
+  }
 
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
@@ -329,6 +357,59 @@ function FreelancerDashboard() {
             />
           )}
         </div>
+      </section>
+
+      <section className="max-w-3xl mx-auto px-6 pt-12">
+        <h2 className="text-3xl mb-4" style={{ fontFamily: '"Instrument Serif", serif' }}>Hire requests</h2>
+        {hireRequests.length === 0 ? (
+          <p className="text-xs uppercase tracking-widest" style={{ color: `${EMERALD}99` }}>No hire requests yet.</p>
+        ) : (
+          <div className="border" style={{ borderColor: `${EMERALD}33` }}>
+            {hireRequests.map((r, idx) => (
+              <div key={r.id} className={`p-5 ${idx > 0 ? "border-t" : ""}`} style={{ borderColor: `${EMERALD}22` }}>
+                <div className="flex flex-wrap items-start justify-between gap-4">
+                  <div className="min-w-0">
+                    <div className="text-xl" style={{ fontFamily: '"Instrument Serif", serif' }}>{r.project_type}</div>
+                    <div className="text-xs mt-1" style={{ color: `${EMERALD}99` }}>
+                      From {r.poster_name || "a job poster"}
+                      {r.poster_email && ` · ${r.poster_email}`}
+                    </div>
+                    {r.budget && <div className="text-xs mt-1" style={{ color: `${EMERALD}99` }}>Budget: {r.budget}</div>}
+                    {r.message && <p className="text-sm mt-2" style={{ color: `${EMERALD}CC` }}>{r.message}</p>}
+                  </div>
+                  <span
+                    className="text-[10px] uppercase tracking-widest px-2 py-1 border shrink-0"
+                    style={{
+                      borderColor: `${EMERALD}44`,
+                      background: r.status === "accepted" ? EMERALD : r.status === "declined" ? "transparent" : `${GOLD}22`,
+                      color: r.status === "accepted" ? PARCH : EMERALD,
+                    }}
+                  >
+                    {r.status}
+                  </span>
+                </div>
+                {r.status === "pending" && (
+                  <div className="mt-3 flex gap-3">
+                    <button
+                      onClick={() => handleRespondToHireRequest(r.id, "accepted")}
+                      className="text-xs uppercase tracking-widest px-4 py-2"
+                      style={{ background: GOLD, color: EMERALD }}
+                    >
+                      Accept
+                    </button>
+                    <button
+                      onClick={() => handleRespondToHireRequest(r.id, "declined")}
+                      className="text-xs uppercase tracking-widest px-4 py-2 border"
+                      style={{ borderColor: `${EMERALD}44` }}
+                    >
+                      Decline
+                    </button>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
       </section>
 
       <section className="max-w-3xl mx-auto px-6 py-12">

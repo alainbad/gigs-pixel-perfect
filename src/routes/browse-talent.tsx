@@ -1,8 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Nav, Footer, Cursor } from "@/components/site";
 import { Search, MapPin, Mail, Phone, Star, Linkedin } from "lucide-react";
 import { getPublicTalent, type PublicFreelancer } from "@/lib/talent.server";
+import { useSession, useProfile } from "@/lib/auth";
+import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/browse-talent")({
   head: () => ({
@@ -32,14 +34,30 @@ function initial(t: PublicFreelancer) {
   return (t.profiles?.full_name ?? "F").charAt(0).toUpperCase();
 }
 
+const EMPTY_HIRE_FORM = { project_type: "", budget: "", message: "" };
+
 function BrowseTalent() {
   const { talent, error } = Route.useLoaderData();
+  const { session } = useSession();
+  const { profile } = useProfile(session?.user.id);
   const [query, setQuery] = useState("");
   const [availability, setAvailability] = useState<(typeof AVAILABILITY)[number]>("All");
   const [skill, setSkill] = useState("");
   const [sort, setSort] = useState<"recent" | "rate" | "experience">("recent");
   const [selectedId, setSelectedId] = useState(talent[0]?.user_id);
   const [today, setToday] = useState("");
+
+  const [hireOpen, setHireOpen] = useState(false);
+  const [hireForm, setHireForm] = useState(EMPTY_HIRE_FORM);
+  const [hireStatus, setHireStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [hireError, setHireError] = useState("");
+
+  useEffect(() => {
+    setHireOpen(false);
+    setHireForm(EMPTY_HIRE_FORM);
+    setHireStatus("idle");
+    setHireError("");
+  }, [selectedId]);
 
   useEffect(() => {
     setToday(new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }));
@@ -83,6 +101,30 @@ function BrowseTalent() {
     setQuery("");
     setAvailability("All");
     setSkill("");
+  }
+
+  async function handleSendHireRequest(e: React.FormEvent) {
+    e.preventDefault();
+    if (!session || !selected) return;
+    setHireStatus("sending");
+    setHireError("");
+
+    const { error: insertError } = await supabase.from("hire_requests").insert({
+      poster_id: session.user.id,
+      poster_name: profile?.full_name ?? null,
+      poster_email: session.user.email ?? null,
+      freelancer_id: selected.user_id,
+      project_type: hireForm.project_type,
+      budget: hireForm.budget || null,
+      message: hireForm.message || null,
+    });
+
+    if (insertError) {
+      setHireStatus("error");
+      setHireError(insertError.message);
+    } else {
+      setHireStatus("sent");
+    }
   }
 
   return (
@@ -395,9 +437,95 @@ function BrowseTalent() {
               <div className="border p-6" style={{ borderColor: `${EMERALD}33` }}>
                 <div className="text-[10px] uppercase tracking-widest" style={{ color: `${EMERALD}99` }}>For Employers</div>
                 <h3 className="mt-2 text-2xl leading-tight" style={{ fontFamily: '"Instrument Serif", serif' }}>Hire this talent.</h3>
-                <p className="mt-3 text-sm" style={{ color: `${EMERALD}CC` }}>
-                  Reach out directly — no bidding wars, no middlemen. Just a clear conversation about your project.
-                </p>
+
+                {!session ? (
+                  <>
+                    <p className="mt-3 text-sm" style={{ color: `${EMERALD}CC` }}>
+                      Log in as a job poster to send this professional a specific hire request.
+                    </p>
+                    <div className="mt-4 flex gap-3">
+                      <Link
+                        to="/login"
+                        className="flex-1 text-center py-3 text-xs uppercase tracking-widest"
+                        style={{ background: GOLD, color: EMERALD }}
+                      >
+                        Log in
+                      </Link>
+                      <Link
+                        to="/signup"
+                        className="flex-1 text-center py-3 text-xs uppercase tracking-widest border"
+                        style={{ borderColor: `${EMERALD}55` }}
+                      >
+                        Sign up
+                      </Link>
+                    </div>
+                  </>
+                ) : profile && profile.role !== "poster" ? (
+                  <p className="mt-3 text-sm" style={{ color: `${EMERALD}CC` }}>
+                    Only job poster accounts can send hire requests. Reach out directly instead using the contact details above.
+                  </p>
+                ) : hireStatus === "sent" ? (
+                  <p className="mt-3 text-sm" style={{ color: `${EMERALD}CC` }}>
+                    Request sent — {selected.profiles?.full_name ?? "this freelancer"} will see it in their dashboard.
+                  </p>
+                ) : hireOpen ? (
+                  <form onSubmit={handleSendHireRequest} className="mt-4 space-y-3">
+                    <div>
+                      <div className="text-[10px] uppercase tracking-widest mb-1" style={{ color: `${EMERALD}99` }}>Project type</div>
+                      <input
+                        required
+                        value={hireForm.project_type}
+                        onChange={(e) => setHireForm({ ...hireForm, project_type: e.target.value })}
+                        placeholder="e.g. Brand identity refresh"
+                        className="w-full bg-transparent border px-3 py-2 text-sm outline-none"
+                        style={{ borderColor: `${EMERALD}55` }}
+                      />
+                    </div>
+                    <div>
+                      <div className="text-[10px] uppercase tracking-widest mb-1" style={{ color: `${EMERALD}99` }}>Budget (optional)</div>
+                      <input
+                        value={hireForm.budget}
+                        onChange={(e) => setHireForm({ ...hireForm, budget: e.target.value })}
+                        placeholder="e.g. $2,000 - $4,000"
+                        className="w-full bg-transparent border px-3 py-2 text-sm outline-none"
+                        style={{ borderColor: `${EMERALD}55` }}
+                      />
+                    </div>
+                    <div>
+                      <div className="text-[10px] uppercase tracking-widest mb-1" style={{ color: `${EMERALD}99` }}>Message</div>
+                      <textarea
+                        rows={3}
+                        value={hireForm.message}
+                        onChange={(e) => setHireForm({ ...hireForm, message: e.target.value })}
+                        placeholder="Tell them about the project…"
+                        className="w-full bg-transparent border px-3 py-2 text-sm outline-none"
+                        style={{ borderColor: `${EMERALD}55` }}
+                      />
+                    </div>
+                    {hireStatus === "error" && <p className="text-xs" style={{ color: "#b3261e" }}>{hireError}</p>}
+                    <button
+                      type="submit"
+                      disabled={hireStatus === "sending"}
+                      className="w-full py-3 text-xs uppercase tracking-widest disabled:opacity-50"
+                      style={{ background: GOLD, color: EMERALD }}
+                    >
+                      {hireStatus === "sending" ? "Sending…" : "Send hire request"}
+                    </button>
+                  </form>
+                ) : (
+                  <>
+                    <p className="mt-3 text-sm" style={{ color: `${EMERALD}CC` }}>
+                      Send a specific hire request — it'll show up in their dashboard with your project details.
+                    </p>
+                    <button
+                      onClick={() => setHireOpen(true)}
+                      className="mt-4 w-full py-3 text-xs uppercase tracking-widest"
+                      style={{ background: GOLD, color: EMERALD }}
+                    >
+                      Hire {selected.profiles?.full_name ?? "this talent"}
+                    </button>
+                  </>
+                )}
               </div>
             </>
           ) : (
