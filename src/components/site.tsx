@@ -113,7 +113,7 @@ function AccountMenu() {
 export function Nav({ active }: { active?: "how" | "browse" | "fairs" | "pricing" }) {
   const items: Array<{ key: string; label: string; to: string }> = [
     { key: "how", label: "How It Works", to: "/#how" },
-    { key: "browse", label: "Browse Talent", to: "/#talent" },
+    { key: "browse", label: "Browse Talent", to: "/browse-talent" },
     { key: "fairs", label: "Job Fairs", to: "/job-fairs" },
     { key: "pricing", label: "Pricing", to: "/#pricing" },
   ];

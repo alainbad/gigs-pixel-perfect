@@ -19,22 +19,28 @@ type FreelancerProfile = {
   headline: string;
   bio: string;
   skills: string[];
-  portfolio_url: string;
+  linkedin_url: string;
   availability: (typeof AVAILABILITY)[number];
   hourly_rate: string;
   location: string;
   years_experience: string;
+  phone: string;
+  contact_email: string;
+  is_public: boolean;
 };
 
 const EMPTY: FreelancerProfile = {
   headline: "",
   bio: "",
   skills: [],
-  portfolio_url: "",
+  linkedin_url: "",
   availability: "Available",
   hourly_rate: "",
   location: "",
   years_experience: "",
+  phone: "",
+  contact_email: "",
+  is_public: false,
 };
 
 type ProjectReference = {
@@ -90,11 +96,14 @@ function FreelancerDashboard() {
             headline: data.headline ?? "",
             bio: data.bio ?? "",
             skills: data.skills ?? [],
-            portfolio_url: data.portfolio_url ?? "",
+            linkedin_url: data.linkedin_url ?? "",
             availability: data.availability ?? "Available",
             hourly_rate: data.hourly_rate?.toString() ?? "",
             location: data.location ?? "",
             years_experience: data.years_experience?.toString() ?? "",
+            phone: data.phone ?? "",
+            contact_email: data.contact_email ?? "",
+            is_public: data.is_public ?? false,
           });
           setSkillsInput((data.skills ?? []).join(", "));
           setCvPath(data.cv_path ?? null);
@@ -128,11 +137,14 @@ function FreelancerDashboard() {
       headline: form.headline,
       bio: form.bio,
       skills,
-      portfolio_url: form.portfolio_url,
+      linkedin_url: form.linkedin_url,
       availability: form.availability,
       hourly_rate: form.hourly_rate ? Number(form.hourly_rate) : null,
       location: form.location,
       years_experience: form.years_experience ? Number(form.years_experience) : null,
+      phone: form.phone,
+      contact_email: form.contact_email,
+      is_public: form.is_public,
       updated_at: new Date().toISOString(),
     });
 
@@ -333,15 +345,40 @@ function FreelancerDashboard() {
               </div>
 
               <div>
-                <div className="mono text-[10px] uppercase tracking-widest mb-2 text-muted">Portfolio URL</div>
+                <div className="mono text-[10px] uppercase tracking-widest mb-2 text-muted">LinkedIn URL</div>
                 <input
                   type="url"
-                  value={form.portfolio_url}
-                  onChange={(e) => setForm({ ...form, portfolio_url: e.target.value })}
-                  placeholder="https://"
+                  value={form.linkedin_url}
+                  onChange={(e) => setForm({ ...form, linkedin_url: e.target.value })}
+                  placeholder="https://linkedin.com/in/…"
                   className="w-full bg-transparent border px-3 py-3 text-sm outline-none"
                   style={{ borderColor: "var(--border)" }}
                 />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <div className="mono text-[10px] uppercase tracking-widest mb-2 text-muted">Mobile number</div>
+                  <input
+                    type="tel"
+                    value={form.phone}
+                    onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                    placeholder="+961 00 000 000"
+                    className="w-full bg-transparent border px-3 py-3 text-sm outline-none"
+                    style={{ borderColor: "var(--border)" }}
+                  />
+                </div>
+                <div>
+                  <div className="mono text-[10px] uppercase tracking-widest mb-2 text-muted">Contact email</div>
+                  <input
+                    type="email"
+                    value={form.contact_email}
+                    onChange={(e) => setForm({ ...form, contact_email: e.target.value })}
+                    placeholder="you@example.com"
+                    className="w-full bg-transparent border px-3 py-3 text-sm outline-none"
+                    style={{ borderColor: "var(--border)" }}
+                  />
+                </div>
               </div>
 
               <div>
@@ -364,6 +401,25 @@ function FreelancerDashboard() {
                   ))}
                 </div>
               </div>
+
+              <label
+                className="flex items-center justify-between gap-4 border px-4 py-3 cursor-pointer"
+                style={{ borderColor: "var(--border)" }}
+              >
+                <span>
+                  <span className="block">List me on Browse Talent</span>
+                  <span className="mono text-xs text-muted">
+                    Makes this profile (not your CV) visible to anyone browsing the site.
+                  </span>
+                </span>
+                <input
+                  type="checkbox"
+                  checked={form.is_public}
+                  onChange={(e) => setForm({ ...form, is_public: e.target.checked })}
+                  className="w-5 h-5 shrink-0"
+                  style={{ accentColor: "var(--ink)" }}
+                />
+              </label>
 
               <button
                 type="submit"
