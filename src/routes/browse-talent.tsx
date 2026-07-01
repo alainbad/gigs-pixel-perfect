@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Nav, Footer, Cursor } from "@/components/site";
 import { Search, MapPin, Mail, Phone, Star, Linkedin } from "lucide-react";
 import { getPublicTalent, type PublicFreelancer } from "@/lib/talent.server";
+import { notifyFreelancerOfHireRequest } from "@/lib/hire.server";
 import { useSession, useProfile } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 
@@ -122,9 +123,22 @@ function BrowseTalent() {
     if (insertError) {
       setHireStatus("error");
       setHireError(insertError.message);
-    } else {
-      setHireStatus("sent");
+      return;
     }
+
+    setHireStatus("sent");
+    notifyFreelancerOfHireRequest({
+      data: {
+        freelancerId: selected.user_id,
+        posterName: profile?.full_name ?? null,
+        posterEmail: session.user.email ?? null,
+        projectType: hireForm.project_type,
+        budget: hireForm.budget || null,
+        message: hireForm.message || null,
+      },
+    }).catch(() => {
+      // Best-effort notification; the hire request itself is already saved.
+    });
   }
 
   return (

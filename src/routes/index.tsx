@@ -1,6 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { Nav, Footer, Cursor, Reveal, Modal, Field, TextArea } from "@/components/site";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Nav, Footer, Cursor, Reveal } from "@/components/site";
 import { Search, Star, ArrowRight } from "lucide-react";
 
 export const Route = createFileRoute("/")({
@@ -53,10 +52,6 @@ const testis = [
 ];
 
 function Home() {
-  const [join, setJoin] = useState(false);
-  const [hire, setHire] = useState(false);
-  const [post, setPost] = useState(false);
-
   return (
     <div className="noise min-h-screen">
       <Cursor />
@@ -78,12 +73,12 @@ function Home() {
             <button className="bg-ink text-paper px-6 py-4 mono text-xs uppercase tracking-widest hover:bg-accent transition-colors">Search</button>
           </div>
           <div className="mt-6 flex flex-wrap gap-4">
-            <button onClick={() => setHire(true)} className="bg-accent text-paper px-8 py-4 mono text-xs uppercase tracking-widest hover:bg-ink transition-colors inline-flex items-center gap-2">
+            <Link to="/browse-talent" className="bg-accent text-paper px-8 py-4 mono text-xs uppercase tracking-widest hover:bg-ink transition-colors inline-flex items-center gap-2">
               Hire Talent <ArrowRight className="w-4 h-4" />
-            </button>
-            <button onClick={() => setPost(true)} className="border border-ink px-8 py-4 mono text-xs uppercase tracking-widest hover:bg-ink hover:text-paper transition-colors">
+            </Link>
+            <Link to="/signup" className="border border-ink px-8 py-4 mono text-xs uppercase tracking-widest hover:bg-ink hover:text-paper transition-colors">
               Post an Opportunity
-            </button>
+            </Link>
           </div>
           <div className="mt-14 grid grid-cols-3 gap-6 max-w-xl">
             {[["2,400+", "Freelancers"], ["180+", "Categories"], ["96%", "Satisfaction"]].map(([n, l]) => (
@@ -202,7 +197,7 @@ function Home() {
                 </div>
                 <div className="mt-6 flex items-center justify-between">
                   <span className="font-display text-2xl">{p.rate}</span>
-                  <button onClick={() => setHire(true)} className="bg-ink text-paper px-5 py-2 mono text-[10px] uppercase tracking-widest hover:bg-accent">Contact</button>
+                  <Link to="/browse-talent" className="bg-ink text-paper px-5 py-2 mono text-[10px] uppercase tracking-widest hover:bg-accent">Contact</Link>
                 </div>
               </div>
             </Reveal>
@@ -259,43 +254,13 @@ function Home() {
           <div className="mono text-xs uppercase tracking-widest">Ready when you are</div>
           <h2 className="font-display text-6xl md:text-8xl mt-6">Ready to hire the right person?</h2>
           <div className="mt-10 flex flex-wrap gap-4 justify-center">
-            <button onClick={() => setHire(true)} className="bg-ink text-paper px-8 py-4 mono text-xs uppercase tracking-widest hover:bg-paper hover:text-ink">Browse Talent</button>
-            <button onClick={() => setJoin(true)} className="border border-paper px-8 py-4 mono text-xs uppercase tracking-widest hover:bg-paper hover:text-ink">Join as Freelancer</button>
+            <Link to="/browse-talent" className="bg-ink text-paper px-8 py-4 mono text-xs uppercase tracking-widest hover:bg-paper hover:text-ink">Browse Talent</Link>
+            <Link to="/signup" className="border border-paper px-8 py-4 mono text-xs uppercase tracking-widest hover:bg-paper hover:text-ink">Join as Freelancer</Link>
           </div>
         </div>
       </section>
 
       <Footer />
-
-      <Modal open={join} onClose={() => setJoin(false)} title="Join as Freelancer">
-        <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); setJoin(false); }}>
-          <Field label="Full name" placeholder="Jane Doe" required />
-          <Field label="Email" type="email" placeholder="jane@studio.com" required />
-          <Field label="Primary skill" placeholder="Brand designer" required />
-          <Field label="Hourly rate (USD)" type="number" placeholder="85" required />
-          <button type="submit" className="w-full bg-ink text-paper py-4 mono text-xs uppercase tracking-widest hover:bg-accent">Create profile</button>
-        </form>
-      </Modal>
-
-      <Modal open={hire} onClose={() => setHire(false)} title="Hire Talent">
-        <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); setHire(false); }}>
-          <Field label="Name" placeholder="Your name" required />
-          <Field label="Email" type="email" placeholder="you@company.com" required />
-          <Field label="Project type" placeholder="Brand identity, mobile app…" required />
-          <TextArea label="Brief" placeholder="Tell us about the work…" required />
-          <button type="submit" className="w-full bg-accent text-paper py-4 mono text-xs uppercase tracking-widest hover:bg-ink">Send brief</button>
-        </form>
-      </Modal>
-
-      <Modal open={post} onClose={() => setPost(false)} title="Post an Opportunity">
-        <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); setPost(false); }}>
-          <Field label="Role title" placeholder="Senior product designer" required />
-          <Field label="Budget" placeholder="$5,000 — $8,000" required />
-          <Field label="Location" placeholder="Remote / Dubai" required />
-          <TextArea label="Description" placeholder="What are you building?" required />
-          <button type="submit" className="w-full bg-ink text-paper py-4 mono text-xs uppercase tracking-widest hover:bg-accent">Post opportunity</button>
-        </form>
-      </Modal>
     </div>
   );
 }
