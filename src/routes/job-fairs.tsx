@@ -8,9 +8,9 @@ import type { Fair } from "@/lib/fairs-data";
 export const Route = createFileRoute("/job-fairs")({
   head: () => ({
     meta: [
-      { title: "The Career Fairs Register — GIGS" },
+      { title: "The Career Fairs Register — FreeLand" },
       { name: "description", content: "Verified hiring events from twenty-seven cities. Register for global career fairs." },
-      { property: "og:title", content: "The Career Fairs Register — GIGS" },
+      { property: "og:title", content: "The Career Fairs Register — FreeLand" },
       { property: "og:description", content: "Verified hiring events from twenty-seven cities." },
     ],
   }),
@@ -126,7 +126,7 @@ function Fairs() {
             <span className="italic" style={{ color: EMERALD_MID }}>Register.</span>
           </h1>
           <p className="mt-6 max-w-2xl text-lg" style={{ color: `${EMERALD}CC` }}>
-            Verified hiring events from twenty-seven cities. Curated by GIGS for founders, studios and career-minded professionals.
+            Verified hiring events from twenty-seven cities. Curated by FreeLand for founders, studios and career-minded professionals.
           </p>
           <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-8">
             {[["24", "Upcoming fairs"], ["640+", "Employers"], ["9,300+", "Openings"], ["38k", "Delegates"]].map(([n, l]) => (

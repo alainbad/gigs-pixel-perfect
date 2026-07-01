@@ -6,7 +6,7 @@ import type { Role } from "@/lib/auth";
 
 export const Route = createFileRoute("/signup")({
   head: () => ({
-    meta: [{ title: "Sign Up — GIGS" }],
+    meta: [{ title: "Sign Up — FreeLand" }],
   }),
   component: Signup,
 });
@@ -53,7 +53,7 @@ function Signup() {
       <section className="pt-32 pb-24 max-w-md mx-auto px-6">
         <h1 className="text-5xl mb-2">Sign Up.</h1>
         <p className="mono text-xs uppercase tracking-widest text-muted mb-10">
-          Create your GIGS account
+          Create your FreeLand account
         </p>
 
         {status === "check-email" ? (

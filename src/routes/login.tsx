@@ -5,7 +5,7 @@ import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
-    meta: [{ title: "Log In — GIGS" }],
+    meta: [{ title: "Log In — FreeLand" }],
   }),
   component: LoginPage,
 });
@@ -46,7 +46,7 @@ function LoginPage() {
       <section className="pt-32 pb-24 max-w-md mx-auto px-6">
         <h1 className="text-5xl mb-2">Log In.</h1>
         <p className="mono text-xs uppercase tracking-widest text-muted mb-10">
-          Welcome back to GIGS
+          Welcome back to FreeLand
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-6">

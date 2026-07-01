@@ -46,7 +46,7 @@ const plans = [
 ];
 
 const testis = [
-  { q: "GIGS rebuilt how our studio hires. We found a brand designer in 48 hours who nailed the brief.", n: "Rania T.", r: "Creative Director, Foldwork", dark: true, img: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&q=80&w=200" },
+  { q: "FreeLand rebuilt how our studio hires. We found a brand designer in 48 hours who nailed the brief.", n: "Rania T.", r: "Creative Director, Foldwork", dark: true, img: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&q=80&w=200" },
   { q: "The lack of bidding is the whole point. Real conversations, fair prices, real work.", n: "Marcus P.", r: "Founder, Northlake", img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200" },
   { q: "Job Fairs are the killer feature. We staffed an entire product team from one weekend.", n: "Amira H.", r: "Head of People, Kaya", img: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=200" },
   { q: "Feels like a magazine and works like a marketplace. Rare combination.", n: "Diego V.", r: "Product Lead, Verba", img: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=200" },

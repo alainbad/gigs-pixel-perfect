@@ -40,7 +40,7 @@ export function Nav({ active }: { active?: "how" | "browse" | "fairs" | "pricing
     <nav className="fixed top-0 inset-x-0 z-50 bg-paper/85 backdrop-blur border-b border-[var(--border)]">
       <div className="max-w-[1400px] mx-auto flex items-center justify-between px-6 lg:px-10 h-16">
         <Link to="/" className="font-display text-3xl tracking-wider">
-          GIG<span className="text-accent">S</span>
+          Free<span className="text-accent">Land</span>
         </Link>
         <ul className="hidden md:flex items-center gap-8 mono text-xs uppercase tracking-widest">
           {items.map((i) =>
@@ -76,7 +76,7 @@ export function Footer() {
     <footer className="bg-ink text-paper mt-20">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-10 py-16 grid md:grid-cols-4 gap-10">
         <div>
-          <div className="font-display text-4xl tracking-wider">GIG<span className="text-accent">S</span></div>
+          <div className="font-display text-4xl tracking-wider">Free<span className="text-accent">Land</span></div>
           <p className="mono text-xs mt-4 text-paper/60 leading-relaxed">
             The editorial marketplace for freelance talent. Est. 2024.
           </p>
@@ -96,7 +96,7 @@ export function Footer() {
       </div>
       <div className="border-t border-paper/10">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10 py-6 flex justify-between mono text-xs text-paper/50">
-          <span>© 2026 GIGS. All rights reserved.</span>
+          <span>© 2026 FreeLand. All rights reserved.</span>
           <span>Made with intent.</span>
         </div>
       </div>
@@ -156,7 +156,7 @@ export function Modal({ open, onClose, title, children }: { open: boolean; onClo
         className="bg-paper border border-ink w-full max-w-lg p-8 lg:p-10 relative shadow-[12px_12px_0_0_var(--ink)]"
       >
         <div className="flex items-center justify-between mb-6">
-          <div className="mono text-[10px] uppercase tracking-widest text-accent">GIGS</div>
+          <div className="mono text-[10px] uppercase tracking-widest text-accent">FreeLand</div>
           <button onClick={onClose} className="mono text-xs uppercase tracking-widest hover:text-accent">Close ✕</button>
         </div>
         <h3 className="font-display text-4xl md:text-5xl leading-none">{title}</h3>

@@ -6,7 +6,7 @@ import { useRequireRole } from "@/lib/auth";
 
 export const Route = createFileRoute("/dashboard/poster")({
   head: () => ({
-    meta: [{ title: "Job Poster Dashboard — GIGS" }],
+    meta: [{ title: "Job Poster Dashboard — FreeLand" }],
   }),
   component: PosterDashboard,
 });
