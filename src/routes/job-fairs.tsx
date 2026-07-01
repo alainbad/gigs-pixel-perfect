@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Nav, Footer, Cursor } from "@/components/site";
 import { Search, Calendar, MapPin, Users, Briefcase, Download, Star } from "lucide-react";
+import { getFairs } from "@/lib/fairs.server";
+import type { Fair } from "@/lib/fairs-data";
 
 export const Route = createFileRoute("/job-fairs")({
   head: () => ({
@@ -12,6 +14,7 @@ export const Route = createFileRoute("/job-fairs")({
       { property: "og:description", content: "Verified hiring events from twenty-seven cities." },
     ],
   }),
+  loader: () => getFairs(),
   component: Fairs,
 });
 
@@ -19,34 +22,6 @@ const EMERALD = "#064e3b";
 const EMERALD_MID = "#0d7a5f";
 const GOLD = "#c9a84c";
 const PARCH = "#f5f0e0";
-
-type Fair = {
-  id: string;
-  name: string;
-  host: string;
-  venue: string;
-  city: string;
-  region: string;
-  date: string;
-  iso: string;
-  format: "In-Person" | "Hybrid" | "Virtual";
-  employers: number;
-  openings: number;
-  attendees: number;
-  industries: string[];
-  status: "Registration Open" | "Almost Full" | "Waitlist";
-  featured?: boolean;
-  img: string;
-};
-
-const FAIRS: Fair[] = [
-  { id: "CF-081", name: "Gulf Talent Summit", host: "Dubai Chamber", venue: "Madinat Jumeirah", city: "Dubai", region: "Middle East", date: "18 Jul 2026", iso: "2026-07-18T09:00:00Z", format: "In-Person", employers: 148, openings: 1240, attendees: 3400, industries: ["Technology", "Finance", "Consulting"], status: "Registration Open", featured: true, img: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&q=80&w=1200" },
-  { id: "CF-082", name: "Frankfurt Finance Forum", host: "Deutsche Börse", venue: "The Squaire", city: "Frankfurt", region: "Europe", date: "04 Aug 2026", iso: "2026-08-04T09:00:00Z", format: "Hybrid", employers: 96, openings: 720, attendees: 2100, industries: ["Finance", "Consulting", "Legal"], status: "Registration Open", img: "https://images.unsplash.com/photo-1467269204594-9661b134dd2b?auto=format&fit=crop&q=80&w=1200" },
-  { id: "CF-083", name: "London Creative Register", host: "Tate & Partners", venue: "The Barbican", city: "London", region: "Europe", date: "22 Aug 2026", iso: "2026-08-22T10:00:00Z", format: "In-Person", employers: 112, openings: 890, attendees: 2600, industries: ["Design", "Media", "Marketing"], status: "Almost Full", img: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&q=80&w=1200" },
-  { id: "CF-084", name: "Singapore Tech Convocation", host: "GovTech SG", venue: "Marina Bay Sands", city: "Singapore", region: "Asia Pacific", date: "09 Sep 2026", iso: "2026-09-09T09:00:00Z", format: "Hybrid", employers: 174, openings: 1620, attendees: 4200, industries: ["Technology", "Data", "Engineering"], status: "Registration Open", img: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&q=80&w=1200" },
-  { id: "CF-085", name: "Remote Futures Weekend", host: "GIGS Global", venue: "Virtual — worldwide", city: "Online", region: "Global", date: "26 Sep 2026", iso: "2026-09-26T00:00:00Z", format: "Virtual", employers: 210, openings: 2400, attendees: 8800, industries: ["Technology", "Design", "Writing", "Marketing"], status: "Registration Open", img: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80&w=1200" },
-  { id: "CF-086", name: "New York Prestige Fair", host: "Cornell Careers", venue: "The Plaza", city: "New York", region: "North America", date: "14 Oct 2026", iso: "2026-10-14T09:00:00Z", format: "In-Person", employers: 132, openings: 980, attendees: 2900, industries: ["Finance", "Consulting", "Legal", "Media"], status: "Waitlist", img: "https://images.unsplash.com/photo-1522083165195-3424ed129620?auto=format&fit=crop&q=80&w=1200" },
-];
 
 const AGENDA = [
   { t: "09:00", n: "Doors open · Delegate check-in", r: "Concourse", s: "S-01" },
@@ -94,20 +69,21 @@ function formatColor(f: Fair["format"]) {
 }
 
 function Fairs() {
+  const fairs = Route.useLoaderData();
   const [query, setQuery] = useState("");
   const [format, setFormat] = useState<(typeof FORMATS)[number]>("All");
   const [region, setRegion] = useState("");
   const [industries, setIndustries] = useState<string[]>([]);
   const [level, setLevel] = useState("");
   const [sort, setSort] = useState<"date" | "employers" | "openings">("date");
-  const [selectedId, setSelectedId] = useState(FAIRS[0].id);
+  const [selectedId, setSelectedId] = useState(fairs[0].id);
   const [today, setToday] = useState("");
   useEffect(() => {
     setToday(new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }));
   }, []);
 
   const filtered = useMemo(() => {
-    let list = FAIRS.filter((f) => {
+    let list = fairs.filter((f) => {
       if (query && !`${f.name} ${f.host} ${f.city}`.toLowerCase().includes(query.toLowerCase())) return false;
       if (format !== "All" && f.format !== format) return false;
       if (region && f.region !== region) return false;
@@ -120,9 +96,9 @@ function Fairs() {
       return b.openings - a.openings;
     });
     return list;
-  }, [query, format, region, industries, sort]);
+  }, [fairs, query, format, region, industries, sort]);
 
-  const selected = filtered.find((f) => f.id === selectedId) ?? filtered[0] ?? FAIRS[0];
+  const selected = filtered.find((f) => f.id === selectedId) ?? filtered[0] ?? fairs[0];
   const cd = useCountdown(new Date(selected.iso));
 
   function toggleIndustry(i: string) {
