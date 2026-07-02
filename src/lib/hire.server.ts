@@ -18,7 +18,7 @@ type NotifyInput = {
 export const notifyFreelancerOfHireRequest = createServerFn({ method: "POST" })
   .validator((data: NotifyInput) => data)
   .handler(async ({ data }): Promise<{ error: string | null }> => {
-    const supabaseUrl = process.env.VITE_SUPABASE_URL;
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
     const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
     const resendApiKey = process.env.RESEND_API_KEY;
 
